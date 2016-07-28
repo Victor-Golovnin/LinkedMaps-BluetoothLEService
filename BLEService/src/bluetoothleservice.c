@@ -20,7 +20,8 @@ static struct _ctrl_data __ctrldata = {0,};
 
 const char* local_port = "BLE_NATIVE";
 const char* global_remote_port = "BLE_WEB";
-const char* remote_app_id = "BW08vTW8wW.LinkedMaps";
+//const char* remote_app_id = "BW08vTW8wW.LinkedMaps";
+const char* remote_app_id = "0ldXwBNODO.LinkedMaps";
 int local_port_id;
 
 static bool __bt_init(void);
@@ -78,18 +79,32 @@ else if ( strcmp(command, "setAdv") == 0 )
 {
 
 	_sdata *sdata = malloc(sizeof(_sdata));
-	char sdstr[10];
+	char sdstr[30];
 
-	 sdata->command = 0;
+
+
+	 bundle_get_str(message, "subcommand", &data);
+
+		dlog_print(DLOG_INFO, TAG, "subcommand %s", data);
+
+	 sdata->command = (char) (data[0] - '0');
+
+	 dlog_print(DLOG_INFO, TAG, "Set command.");
 
 	 bundle_get_str(message, "lat", &data);
 	 sdata->lat = strtof(data, NULL);
 
+	 dlog_print(DLOG_INFO, TAG, "Set lat.");
+
 	 bundle_get_str(message, "lng", &data);
 	 sdata->lng = strtof(data, NULL);
 
+	 dlog_print(DLOG_INFO, TAG, "Set lng");
+
 	 bundle_get_str(message, "stamp", &data);
 	 sdata->stamp = (unsigned int) strtol(data, NULL, 10);
+
+	 dlog_print(DLOG_INFO, TAG, "Set stamp.");
 
 
 	if (!bt_advertizer_set_data(__ctrldata.adv_h, SERVICE_UUID , (const char *) sdata, sizeof(_sdata)))
