@@ -79,6 +79,7 @@ else if ( strcmp(command, "setAdv") == 0 )
 
 	_sdata *sdata = malloc(sizeof(_sdata));
 
+	 sdata->command = 0;
 
 	 bundle_get_str(message, "lat", &data);
 	 sdata->lat = strtof(data, NULL);
@@ -86,8 +87,8 @@ else if ( strcmp(command, "setAdv") == 0 )
 	 bundle_get_str(message, "lng", &data);
 	 sdata->lng = strtof(data, NULL);
 
-	 sdata->command = 0;
-	 sdata->stamp = 228;
+	 bundle_get_str(message, "stamp", &data);
+	 sdata->stamp = (unsigned int) strtol(data, NULL, 10);
 
 
 	if (!bt_advertizer_set_data(__ctrldata.adv_h, SERVICE_UUID , (const char *) sdata, sizeof(_sdata)))
@@ -284,39 +285,17 @@ __bt_adapter_le_scan_result_cb(int result,
   //  {
     int ret;
         char **uuids;
-        char *device_name;
+//      char *device_name;
         int tx_power_level;
         bt_adapter_le_service_data_s *data_list;
- //       int appearance;
- //       int manufacturer_id;
-  //      char *manufacturer_data;
-  //      int manufacturer_data_len;
         int count;
       	 _sdata *sdata = NULL;
-      //  pkt_type += i;
-       // if (pkt_type == BT_ADAPTER_LE_PACKET_ADVERTISING && info->adv_data == NULL)
-        //    continue;
-      //  if (pkt_type == BT_ADAPTER_LE_PACKET_SCAN_RESPONSE && info->scan_data == NULL)
-      //      break;
 
-     /*   if (bt_adapter_le_get_scan_result_service_uuids(info, pkt_type, &uuids, &count) == BT_ERROR_NONE) {
-            int i;
-            for (i = 0; i < count; i++)
-            {
-                dlog_print(DLOG_INFO, LOG_TAG, "UUID[%d] = %s", i + 1, uuids[i]);
-               //g_
-                free(uuids[i]);
-            }
-           //g_
-            free(uuids);
-        }
-        */
-
-        if (bt_adapter_le_get_scan_result_device_name(info, pkt_type, &device_name) == BT_ERROR_NONE) {
+    /*    if (bt_adapter_le_get_scan_result_device_name(info, pkt_type, &device_name) == BT_ERROR_NONE) {
             dlog_print(DLOG_INFO, LOG_TAG, "Device name = %s", device_name);
             //g_
             //free(device_name);
-        }
+        }*/
         if (bt_adapter_le_get_scan_result_tx_power_level(info, pkt_type, &tx_power_level) == BT_ERROR_NONE) {
             dlog_print(DLOG_INFO, LOG_TAG, "TX Power level = %d", tx_power_level);
         }
@@ -360,7 +339,7 @@ __bt_adapter_le_scan_result_cb(int result,
             		bundle_add_str(message, "lat", buffer);
 
             		snprintf(buffer, 20, "%f", sdata->lng);
-            		bundle_add_str(message, "lat", buffer);
+            		bundle_add_str(message, "lng", buffer);
 
             		ret = message_port_send_message(remote_app_id, global_remote_port, message);
 
@@ -378,21 +357,7 @@ __bt_adapter_le_scan_result_cb(int result,
         	 dlog_print(DLOG_ERROR, LOG_TAG, "SERVICE DATA ERROR %s", get_error_message(ret));
 
 
-/*
-
-        if (bt_adapter_le_get_scan_result_appearance(info, pkt_type, &appearance) == BT_ERROR_NONE) {
-            dlog_print(DLOG_INFO, LOG_TAG, "Appearance = %d", appearance);
-        }
-        if (bt_adapter_le_get_scan_result_manufacturer_data(info, pkt_type, &manufacturer_id, &manufacturer_data, &manufacturer_data_len) == BT_ERROR_NONE) {
-            dlog_print(DLOG_INFO, LOG_TAG, "Manufacturer data[ID:%.4X, 0x%.2X%.2X...(len:%d)]",
-                    manufacturer_id, manufacturer_data[0], manufacturer_data[1], manufacturer_data_len);
-           // g_
-            free(manufacturer_data);
-        }*/
-
-   // }
-
-        // bundle_free(bundle);
+         bundle_free(message);
 }
 
 
