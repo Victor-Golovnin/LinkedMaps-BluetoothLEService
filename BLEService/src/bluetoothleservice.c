@@ -22,7 +22,6 @@ const char* global_remote_port = "BLE_WEB";
 const char* remote_app_id = "dsdml9mCw4.LinkedMaps";
 int local_port_id;
 
-void _bluetooth_adv(void* data);
 static bool __bt_init(void);
 static void __bt_device_state_changed_cb(int result, bt_adapter_state_e adapter_state, void *user_data);
 static void __bt_adapter_le_scan_result_cb(int result, bt_adapter_le_device_scan_result_info_s *info, void *user_data);
@@ -51,15 +50,12 @@ if ( strcmp(command, "startScan") == 0 )
     ret = BT_ERROR_NONE;
    	    ret = bt_adapter_le_start_scan(__bt_adapter_le_scan_result_cb, NULL);
 
-   	    bundle *reply = bundle_create();
-
    	    if (ret != BT_ERROR_NONE)    {
    	    	bundle_add_str(reply, "result", "Failed");
    	        dlog_print(DLOG_ERROR, LOG_TAG, "[bt_adapter_le_start_scan] failed.");
    	    }
    	    else
    	    	bundle_add_str(reply, "result", "OK");
-   	    return;
 }
 
 else if ( strcmp(command, "stopScan") == 0 )
@@ -75,7 +71,6 @@ else if ( strcmp(command, "stopScan") == 0 )
    	    else
    	    	bundle_add_str(reply, "result", "OK");
 
-   	    return;
 }
 
 else if ( strcmp(command, "setAdv") == 0 )
@@ -100,7 +95,6 @@ else if ( strcmp(command, "setAdv") == 0 )
 		bundle_add_str(reply, "result", "OK");
 
 	free(sdata);
-	 return;
 }
 
   //  bundle_get_str(message, "data", &data);
@@ -278,6 +272,7 @@ __bt_adapter_le_scan_result_cb(int result,
 
   //  for (i = 0; i < 2; i++)
   //  {
+    int ret;
         char **uuids;
         char *device_name;
         int tx_power_level;
@@ -326,7 +321,10 @@ __bt_adapter_le_scan_result_cb(int result,
            // g_
             free(uuids);
         }
-        if (bt_adapter_le_get_scan_result_service_data_list(info, pkt_type, &data_list, &count) == BT_ERROR_NONE) {
+
+        ret = bt_adapter_le_get_scan_result_service_data_list(info, pkt_type, &data_list, &count);
+
+        if (ret == BT_ERROR_NONE) {
             int i;
             for (i = 0; i < count; i++)
             {
@@ -348,6 +346,9 @@ __bt_adapter_le_scan_result_cb(int result,
             bt_adapter_le_free_service_data_list(data_list, count);
             }
         }
+        else
+        	 dlog_print(DLOG_ERROR, LOG_TAG, "SERVICE DATA ERROR", get_error_message(ret));
+
 
 
 
