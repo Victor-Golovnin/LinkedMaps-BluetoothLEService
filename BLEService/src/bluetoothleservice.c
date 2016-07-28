@@ -87,8 +87,8 @@ else if ( strcmp(command, "setAdv") == 0 )
 	 bundle_get_str(message, "lng", &data);
 	 sdata->lng = strtof(data, NULL);
 
-	 bundle_get_str(message, "stamp", &data);
-	 sdata->stamp = (unsigned int) strtol(data, NULL, 10);
+	 //bundle_get_str(message, "stamp", &data);
+	 sdata->stamp = 230; //(unsigned int) strtol(data, NULL, 10);
 
 
 	if (!bt_advertizer_set_data(__ctrldata.adv_h, SERVICE_UUID , (const char *) sdata, sizeof(_sdata)))
@@ -101,9 +101,11 @@ else if ( strcmp(command, "setAdv") == 0 )
 
 	free(sdata);
 }
-
-
-
+else if (strcmp(command, "stopAdv") == 0)
+{
+	bt_advertiser_delete(__ctrldata.adv_h);
+	bundle_add_str(reply, "result", "unknown");
+}
 
     ret = message_port_send_message(remote_app_id, global_remote_port, reply);
 
