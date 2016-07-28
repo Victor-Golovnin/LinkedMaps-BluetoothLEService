@@ -342,8 +342,8 @@ __bt_adapter_le_scan_result_cb(int result,
             		sdata = (_sdata*) malloc(data_list[i].service_data_len);
             		memcpy(sdata, data_list[i].service_data, data_list[i].service_data_len);
 
-            		dlog_print(DLOG_INFO, LOG_TAG, "Service Data command: %i",// i + 1,
-            		                    sdata->command);
+            		dlog_print(DLOG_INFO, LOG_TAG, "Service Data command: %i, cord[2][0]: %f, stamp: %i",// i + 1,
+            		                    sdata->command, sdata->coords[2][0], sdata->stamp);
             		free(sdata);
             	}
 
