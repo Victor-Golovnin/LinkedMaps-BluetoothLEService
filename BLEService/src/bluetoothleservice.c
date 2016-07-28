@@ -328,10 +328,10 @@ __bt_adapter_le_scan_result_cb(int result,
             int i;
             for (i = 0; i < count; i++)
             {
-            	dlog_print(DLOG_INFO, LOG_TAG, "Service Data[%x]",// i + 1,
+            	dlog_print(DLOG_INFO, LOG_TAG, "Service UUID [%s]",// i + 1,
                     data_list[i].service_uuid);
 
-            	if(data_list[i].service_uuid == SERVICE_UUID)
+            	if( strcmp(data_list[i].service_uuid, SERVICE_UUID) == 0 )
             	{
             		sdata = (_sdata*) malloc(data_list[i].service_data_len);
             		memcpy(sdata, data_list[i].service_data, data_list[i].service_data_len);
