@@ -82,9 +82,15 @@ else if ( strcmp(command, "setAdv") == 0 )
 	// sdata->lat = strtof(str, NULL);
 
 
-	sdata->command = 8;
-	sdata->lat = 243.12f;
-	sdata->lon = 121.3456f;
+	sdata->command = 0;
+	sdata->coords[0][0] = 0.0f;
+	sdata->coords[0][1] = 1.0f;
+	sdata->coords[1][0] = 2.0f;
+	sdata->coords[1][1] = 3.98765678f;
+	sdata->coords[2][0] = 4.0f;
+	sdata->coords[2][1] = 355.0f;
+	sdata->stamp = 228;
+
 
 	if (!bt_advertizer_set_data(__ctrldata.adv_h, SERVICE_UUID , (const char *) sdata, sizeof(_sdata)))
 	{
