@@ -47,14 +47,14 @@ static bool __set_properties(bt_advertiser_h adv_h, struct _adv_properties prope
 	if (properties.appearance > 0)
 		if (!bt_common_set_appearance(adv_h, properties.pkt_type, properties.appearance))
 			return false;
-
+/*
 	if (properties.manufacturer_id > 0)
 		if (!bt_common_set_manufacturer(adv_h,
 										properties.pkt_type,
 										properties.manufacturer_id,
 										(const char *)&properties.manufacturer_data,
 										sizeof(struct _manufacturer_data)))
-			return false;
+			return false;*/
 /*
 	if (!bt_common_set_tx_power_level(adv_h, properties.pkt_type, properties.tx_power))
 		return false;*/

@@ -3,6 +3,7 @@
 #include <message_port.h>
 #include <dlog.h>
 #include <locale.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include "bluetoothleservice.h"
 #include "bt/bt_common.h"
@@ -35,7 +36,7 @@ void message_port_cb(int local_port_id, const char *remote_app_id, const char *r
     int ret;
     char *command = NULL;
     char *data = NULL;
-    char *str = NULL;
+    //char *str = NULL;
 
  //   _sdata *sdata = (_sdata *) memset(sizeof(_sdata));
     bundle_get_str(message, "command", &command);
@@ -77,19 +78,16 @@ else if ( strcmp(command, "setAdv") == 0 )
 {
 
 	_sdata *sdata = malloc(sizeof(_sdata));
-	 char *str;
-	// bundle_get_str(message, "lat", &str);
-	// sdata->lat = strtof(str, NULL);
 
 
-	sdata->command = 0;
-	sdata->coords[0][0] = 0.0f;
-	sdata->coords[0][1] = 1.0f;
-	sdata->coords[1][0] = 2.0f;
-	sdata->coords[1][1] = 3.98765678f;
-	sdata->coords[2][0] = 4.0f;
-	sdata->coords[2][1] = 355.0f;
-	sdata->stamp = 228;
+	 bundle_get_str(message, "lat", &data);
+	 sdata->lat = strtof(data, NULL);
+
+	 bundle_get_str(message, "lng", &data);
+	 sdata->lng = strtof(data, NULL);
+
+	 sdata->command = 0;
+	 sdata->stamp = 228;
 
 
 	if (!bt_advertizer_set_data(__ctrldata.adv_h, SERVICE_UUID , (const char *) sdata, sizeof(_sdata)))
@@ -103,7 +101,7 @@ else if ( strcmp(command, "setAdv") == 0 )
 	free(sdata);
 }
 
-  //  bundle_get_str(message, "data", &data);
+
 
 
     ret = message_port_send_message(remote_app_id, global_remote_port, reply);
@@ -148,6 +146,12 @@ void service_app_terminate(void *data)
 {
 
 	message_port_unregister_local_port (local_port_id);
+
+	bt_adapter_unset_state_changed_cb();
+	bt_adapter_unset_device_discovery_state_changed_cb();
+	bt_device_unset_service_searched_cb();
+	bt_socket_unset_data_received_cb();
+	bt_socket_unset_connection_state_changed_cb();
 
 	bt_advertiser_delete(__ctrldata.adv_h);
 	dlog_print(DLOG_INFO, TAG, "Service terminated");
@@ -259,7 +263,7 @@ __bt_adapter_le_scan_result_cb(int result,
                                void *user_data)
 {
 	//int i;
-	bundle *message = NULL;
+	bundle *message = bundle_create();
     bt_adapter_le_packet_type_e pkt_type =  BT_ADAPTER_LE_PACKET_SCAN_RESPONSE;//BT_ADAPTER_LE_PACKET_ADVERTISING;
 
     if (info == NULL) {
@@ -283,10 +287,10 @@ __bt_adapter_le_scan_result_cb(int result,
         char *device_name;
         int tx_power_level;
         bt_adapter_le_service_data_s *data_list;
-        int appearance;
-        int manufacturer_id;
-        char *manufacturer_data;
-        int manufacturer_data_len;
+ //       int appearance;
+ //       int manufacturer_id;
+  //      char *manufacturer_data;
+  //      int manufacturer_data_len;
         int count;
       	 _sdata *sdata = NULL;
       //  pkt_type += i;
@@ -332,6 +336,7 @@ __bt_adapter_le_scan_result_cb(int result,
 
         if (ret == BT_ERROR_NONE) {
             int i;
+            char buffer[20];
             for (i = 0; i < count; i++)
             {
             	dlog_print(DLOG_INFO, LOG_TAG, "Service UUID [%s]",// i + 1,
@@ -342,8 +347,27 @@ __bt_adapter_le_scan_result_cb(int result,
             		sdata = (_sdata*) malloc(data_list[i].service_data_len);
             		memcpy(sdata, data_list[i].service_data, data_list[i].service_data_len);
 
-            		dlog_print(DLOG_INFO, LOG_TAG, "Service Data command: %i, cord[2][0]: %f, stamp: %i",// i + 1,
-            		                    sdata->command, sdata->coords[2][0], sdata->stamp);
+            		dlog_print(DLOG_INFO, LOG_TAG, "Service Data command: %i, stamp: %i",// i + 1,
+            		                    sdata->command, sdata->stamp);
+
+            		snprintf(buffer, 20, "%i", sdata->command);
+            		bundle_add_str(message, "command", buffer);
+
+            		snprintf(buffer, 20, "%i", sdata->stamp);
+            		bundle_add_str(message, "stamp", buffer);
+
+            		snprintf(buffer, 20, "%f", sdata->lat);
+            		bundle_add_str(message, "lat", buffer);
+
+            		snprintf(buffer, 20, "%f", sdata->lng);
+            		bundle_add_str(message, "lat", buffer);
+
+            		ret = message_port_send_message(remote_app_id, global_remote_port, message);
+
+            	    if (ret != MESSAGE_PORT_ERROR_NONE)
+            	        dlog_print(DLOG_ERROR, TAG, "Port send message error: %s", get_error_message(ret));
+
+
             		free(sdata);
             	}
 
@@ -354,7 +378,7 @@ __bt_adapter_le_scan_result_cb(int result,
         	 dlog_print(DLOG_ERROR, LOG_TAG, "SERVICE DATA ERROR %s", get_error_message(ret));
 
 
-
+/*
 
         if (bt_adapter_le_get_scan_result_appearance(info, pkt_type, &appearance) == BT_ERROR_NONE) {
             dlog_print(DLOG_INFO, LOG_TAG, "Appearance = %d", appearance);
@@ -364,7 +388,7 @@ __bt_adapter_le_scan_result_cb(int result,
                     manufacturer_id, manufacturer_data[0], manufacturer_data[1], manufacturer_data_len);
            // g_
             free(manufacturer_data);
-        }
+        }*/
 
    // }
 
