@@ -347,7 +347,7 @@ __bt_adapter_le_scan_result_cb(int result,
             }
         }
         else
-        	 dlog_print(DLOG_ERROR, LOG_TAG, "SERVICE DATA ERROR", get_error_message(ret));
+        	 dlog_print(DLOG_ERROR, LOG_TAG, "SERVICE DATA ERROR %s", get_error_message(ret));
 
 
 
