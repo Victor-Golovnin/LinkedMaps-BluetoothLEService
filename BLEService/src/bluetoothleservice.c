@@ -328,18 +328,16 @@ __bt_adapter_le_scan_result_cb(int result,
             int i;
             for (i = 0; i < count; i++)
             {
-            	dlog_print(DLOG_INFO, LOG_TAG, "Service Data[%x] = [%i] (%f, f)",// i + 1,
-                    data_list[i].service_uuid, sdata->command, sdata->lat, sdata->lon);
+            	dlog_print(DLOG_INFO, LOG_TAG, "Service Data[%x]",// i + 1,
+                    data_list[i].service_uuid);
 
             	if(data_list[i].service_uuid == SERVICE_UUID)
             	{
             		sdata = (_sdata*) malloc(data_list[i].service_data_len);
             		memcpy(sdata, data_list[i].service_data, data_list[i].service_data_len);
 
-
-
-
-
+            		dlog_print(DLOG_INFO, LOG_TAG, "Service Data command: %i",// i + 1,
+            		                    sdata->command);
             		free(sdata);
             	}
 
