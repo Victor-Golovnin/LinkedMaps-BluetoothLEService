@@ -1,4 +1,4 @@
-#define SERVICE_UUID "2A37" //"1819"
+#define SERVICE_UUID "1819" // "2A37"
 
 typedef struct {
 	unsigned short command;

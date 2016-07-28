@@ -19,7 +19,7 @@ static struct _ctrl_data __ctrldata = {0,};
 
 const char* local_port = "BLE_NATIVE";
 const char* global_remote_port = "BLE_WEB";
-const char* remote_app_id = "dsdml9mCw4.LinkedMaps";
+const char* remote_app_id = "BW08vTW8wW.LinkedMaps";
 int local_port_id;
 
 static bool __bt_init(void);
