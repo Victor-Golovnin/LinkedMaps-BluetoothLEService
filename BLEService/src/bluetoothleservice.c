@@ -67,7 +67,7 @@ else if ( strcmp(command, "stopScan") == 0 )
 
    	    if (ret != BT_ERROR_NONE)    {
    	    	bundle_add_str(reply, "result", "Failed");
-   	        dlog_print(DLOG_ERROR, LOG_TAG, "[bt_adapter_le_start_stop] failed.");
+   	        dlog_print(DLOG_ERROR, LOG_TAG, "[bt_adapter_le_stop_scan] failed.");
    	    }
    	    else
    	    	bundle_add_str(reply, "result", "OK");
@@ -78,6 +78,7 @@ else if ( strcmp(command, "setAdv") == 0 )
 {
 
 	_sdata *sdata = malloc(sizeof(_sdata));
+	char sdstr[10];
 
 	 sdata->command = 0;
 
@@ -98,6 +99,10 @@ else if ( strcmp(command, "setAdv") == 0 )
 	}
 	else
 		bundle_add_str(reply, "result", "OK");
+
+
+	sprintf(sdstr, "%i", sizeof(_sdata));
+	bundle_add_str(reply, "sizeof_sdata", data);
 
 	free(sdata);
 }

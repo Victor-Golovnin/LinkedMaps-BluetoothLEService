@@ -20,8 +20,6 @@ struct _adv_properties {
 	int appearance;
 	int manufacturer_id;
 	struct _manufacturer_data manufacturer_data;
-	int servicedata_id;
-	struct _service_data service_data;
 };
 
 static int __advertizer_appearance = 0;
